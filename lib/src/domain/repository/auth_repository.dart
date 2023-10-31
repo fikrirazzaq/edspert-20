@@ -1,3 +1,5 @@
+import 'package:firebase_auth/firebase_auth.dart';
+
 import '../../data/model/model.dart';
 import '../entity/user_response_entity.dart';
 
@@ -14,4 +16,6 @@ abstract class AuthRepository {
   Future<bool> isUserRegistered();
 
   Future<bool> signOut();
+
+  Future<User?> signInWithGoogle();
 }

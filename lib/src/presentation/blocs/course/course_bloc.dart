@@ -13,7 +13,10 @@ class CourseBloc extends Bloc<CourseEvent, CourseState> {
   final GetExercisesByCourseUsecase getExercisesByCourseUsecase;
 
   /// Shared State
-  CourseBloc(this.getCoursesUsecase, this.getExercisesByCourseUsecase) : super(CourseInit()) {
+  CourseBloc(
+    this.getCoursesUsecase,
+    this.getExercisesByCourseUsecase,
+  ) : super(CourseInit()) {
     on<CourseEvent>((event, emit) async {
       if (event is GetCoursesEvent) {
         emit(LoadingGetCoursesState());

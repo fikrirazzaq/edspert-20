@@ -10,35 +10,32 @@ class HomeNavigationScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => HomeNavCubit(),
-      child: BlocBuilder<HomeNavCubit, HomeNav>(
-        builder: (context, state) {
-          return Scaffold(
-            body: nav[state.index],
-            bottomNavigationBar: BottomNavigationBar(
-              currentIndex: state.index,
-              items: const [
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.home),
-                  label: 'Home',
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.message),
-                  label: 'Diskusi',
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.person),
-                  label: 'Profile',
-                ),
-              ],
-              onTap: (index) {
-                context.read<HomeNavCubit>().navTo(HomeNav.values[index]);
-              },
-            ),
-          );
-        },
-      ),
+    return BlocBuilder<HomeNavCubit, HomeNav>(
+      builder: (context, state) {
+        return Scaffold(
+          body: nav[state.index],
+          bottomNavigationBar: BottomNavigationBar(
+            currentIndex: state.index,
+            items: const [
+              BottomNavigationBarItem(
+                icon: Icon(Icons.home),
+                label: 'Home',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.message),
+                label: 'Diskusi',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.person),
+                label: 'Profile',
+              ),
+            ],
+            onTap: (index) {
+              context.read<HomeNavCubit>().navTo(HomeNav.values[index]);
+            },
+          ),
+        );
+      },
     );
   }
 

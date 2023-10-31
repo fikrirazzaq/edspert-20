@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../values/colors.dart';
+import '../../blocs/auth/bloc/auth_bloc.dart';
 import '../../router/routes.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -53,11 +56,54 @@ class LoginScreen extends StatelessWidget {
                 ),
                 Column(
                   children: [
-                    ElevatedButton(
-                      onPressed: () async {
-                        Navigator.pushReplacementNamed(context, Routes.homeScreen);
+                    BlocListener<AuthBloc, AuthState>(
+                      listener: (context, state) {
+                        if (state is SignInWithGoogleState) {
+                          if (!state.isLoading && state.result != null) {
+                            //// Check is registered.
+                            /// AuthBloc.add(CheckIsUserRegisteredEvent());
+                            Navigator.pushReplacementNamed(context, Routes.homeScreen);
+                          }
+                        }
+
+                        // TODO: handler for CheckIsUserRegisteredEvent
+                        // if (state is CheckIsUserRegisteredEvent) {
+                        //   bool isRegistered = state.result;
+
+                        //   if (isRegistered) {
+                        //     Navigator.pushReplacementNamed(context, Routes.homeScreen);
+                        //   } else {
+                        //     Navigator.pushReplacementNamed(context, Routes.registrationFormScreen);
+                        //   }
+                        // }
                       },
-                      child: const Text('Login With Google'),
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(30),
+                        onTap: () {
+                          context.read<AuthBloc>().add(SignInWithGoogleEvent());
+                        },
+                        child: Ink(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 32,
+                            vertical: 12,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(30),
+                            border: Border.all(
+                              color: AppColors.green,
+                            ),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.login),
+                              SizedBox(width: 12),
+                              Text('Masuk dengan Google'),
+                            ],
+                          ),
+                        ),
+                      ),
                     ),
                     ElevatedButton(
                       onPressed: () {},
