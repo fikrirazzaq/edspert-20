@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../values/colors.dart';
-import '../../blocs/auth/bloc/auth_bloc.dart';
+import '../../blocs/auth/auth_bloc.dart';
 import '../../router/routes.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -61,21 +61,22 @@ class LoginScreen extends StatelessWidget {
                         if (state is SignInWithGoogleState) {
                           if (!state.isLoading && state.result != null) {
                             //// Check is registered.
-                            /// AuthBloc.add(CheckIsUserRegisteredEvent());
-                            Navigator.pushReplacementNamed(context, Routes.homeScreen);
+                            context.read<AuthBloc>().add(CheckIsUserRegisteredEvent());
+                          } else {
+                            print('Login cancelled!');
                           }
                         }
 
                         // TODO: handler for CheckIsUserRegisteredEvent
-                        // if (state is CheckIsUserRegisteredEvent) {
-                        //   bool isRegistered = state.result;
+                        if (state is CheckIsUserRegisteredState) {
+                          bool isRegistered = state.isRegistered;
 
-                        //   if (isRegistered) {
-                        //     Navigator.pushReplacementNamed(context, Routes.homeScreen);
-                        //   } else {
-                        //     Navigator.pushReplacementNamed(context, Routes.registrationFormScreen);
-                        //   }
-                        // }
+                          if (isRegistered) {
+                            Navigator.pushReplacementNamed(context, Routes.homeScreen);
+                          } else {
+                            Navigator.pushReplacementNamed(context, Routes.registrationFormScreen);
+                          }
+                        }
                       },
                       child: InkWell(
                         borderRadius: BorderRadius.circular(30),

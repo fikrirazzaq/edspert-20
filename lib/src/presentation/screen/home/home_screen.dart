@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -12,6 +13,7 @@ import '../../../domain/repository/course_repository.dart';
 import '../../../domain/usecase/courses/get_courses_usecase.dart';
 import '../../../domain/usecase/courses/get_exercises_by_course_usecase.dart';
 import '../../../domain/usecase/get_banners_usecase.dart';
+import '../../blocs/auth/auth_bloc.dart';
 import '../../blocs/banner/banner_cubit.dart';
 import '../../blocs/course/course_bloc.dart';
 import '../../blocs/home_nav/home_nav_cubit.dart';
@@ -45,11 +47,11 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         backgroundColor: Colors.transparent,
-        title: const Column(
+        title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Fadil',
+              context.read<AuthBloc>().getCurrentSignedInEmail(),
               style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
             ),
             Text(

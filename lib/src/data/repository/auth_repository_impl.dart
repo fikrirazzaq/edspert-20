@@ -14,7 +14,7 @@ class AuthRepositoryImpl implements AuthRepository {
 
   @override
   String? getCurrentSignedInEmail() {
-    return '';
+    return FirebaseAuth.instance.currentUser?.email;
   }
 
   @override
@@ -61,6 +61,8 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<bool> signOut() async {
     try {
+      await GoogleSignIn().signOut();
+      await FirebaseAuth.instance.signOut();
       return true;
     } catch (e, stackTrace) {
       if (kDebugMode) {

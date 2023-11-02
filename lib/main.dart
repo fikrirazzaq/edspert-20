@@ -4,8 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning/firebase_options.dart';
 import 'package:learning/src/data/datasource/remote/auth_remote_datasource.dart';
+import 'package:learning/src/data/datasource/remote/profile_remote_datasource.dart';
 import 'package:learning/src/data/repository/auth_repository_impl.dart';
+import 'package:learning/src/data/repository/profile_repository_impl.dart';
 import 'package:learning/src/domain/usecase/auth_usecases/usecases.dart';
+import 'package:learning/src/domain/usecase/profile/get_profile_usecase.dart';
+import 'package:learning/src/domain/usecase/profile/update_profile_usecase.dart';
+import 'package:learning/src/presentation/blocs/profile/profile_bloc.dart';
+import 'package:learning/src/presentation/screen/profile/edit_profile_screen.dart';
 
 import 'bloc_observer.dart';
 import 'src/data/datasource/remote/banner_remote_datasource.dart';
@@ -16,7 +22,7 @@ import 'src/domain/repository/course_repository.dart';
 import 'src/domain/usecase/courses/get_courses_usecase.dart';
 import 'src/domain/usecase/courses/get_exercises_by_course_usecase.dart';
 import 'src/domain/usecase/get_banners_usecase.dart';
-import 'src/presentation/blocs/auth/bloc/auth_bloc.dart';
+import 'src/presentation/blocs/auth/auth_bloc.dart';
 import 'src/presentation/blocs/banner/banner_cubit.dart';
 import 'src/presentation/blocs/course/course_bloc.dart';
 import 'src/presentation/blocs/home_nav/home_nav_cubit.dart';
@@ -75,6 +81,32 @@ class MyApp extends StatelessWidget {
                 remoteDatasource: AuthRemoteDatasource(client: Dio()),
               ),
             ),
+            IsUserRegisteredUsecase(
+              repository: AuthRepositoryImpl(
+                remoteDatasource: AuthRemoteDatasource(client: Dio()),
+              ),
+            ),
+            IsSignedInWithGoogleUsecase(
+              repository: AuthRepositoryImpl(
+                remoteDatasource: AuthRemoteDatasource(client: Dio()),
+              ),
+            ),
+          ),
+        ),
+        BlocProvider(
+          create: (context) => ProfileBloc(
+            GetProfileUsecase(
+              repository: ProfileRepositoryImpl(
+                authRemoteDatasource: AuthRemoteDatasource(client: Dio()),
+                profileRemoteDatasource: ProfileRemoteDatasource(client: Dio()),
+              ),
+            ),
+            UpdateProfileUsecase(
+              repository: ProfileRepositoryImpl(
+                authRemoteDatasource: AuthRemoteDatasource(client: Dio()),
+                profileRemoteDatasource: ProfileRemoteDatasource(client: Dio()),
+              ),
+            ),
           ),
         ),
       ],
@@ -96,6 +128,7 @@ class MyApp extends StatelessWidget {
           Routes.homeScreen: (context) => HomeNavigationScreen(),
           Routes.courseListScreen: (context) => const CourseListScreen(),
           Routes.exerciseListScreen: (context) => const ExerciseListScreen(),
+          Routes.editProfile: (context) => const EditProfileScreen(),
         },
       ),
     );

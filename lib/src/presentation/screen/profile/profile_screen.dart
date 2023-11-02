@@ -1,7 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../blocs/banner/banner_cubit.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:learning/src/domain/entity/user_response_entity.dart';
+import 'package:learning/src/presentation/blocs/profile/profile_bloc.dart';
+import 'package:learning/src/presentation/router/routes.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -13,7 +16,6 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   @override
   void initState() {
-    print('initState: ProfileScreen');
     super.initState();
   }
 
@@ -21,20 +23,68 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    context.read<BannerCubit>().getBanners();
+    context.read<ProfileBloc>().add(GetProfileEvent());
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Akun Saya'),
-      ),
-      body: ListView(
-        children: [
-          Text('Name:'),
-        ],
-      ),
+    return BlocBuilder<ProfileBloc, ProfileState>(
+      buildWhen: (previous, current) => current is GetProfileState,
+      builder: (context, state) {
+        String? name;
+        String? school;
+        UserDataEntity? profile;
+        if (state is GetProfileState) {
+          name = state.profile?.userName;
+          school = state.profile?.userAsalSekolah;
+          profile = state.profile;
+        }
+
+        return Scaffold(
+          appBar: AppBar(
+            title: const Text('Akun Saya',
+                style: TextStyle(
+                  color: Colors.white,
+                )),
+            centerTitle: true,
+            actions: [
+              TextButton(
+                onPressed: () {
+                  if (profile != null) {
+                    Navigator.pushNamed(
+                      context,
+                      Routes.editProfile,
+                      arguments: profile,
+                    );
+                  }
+                },
+                child: Text(
+                  'Edit',
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
+              )
+            ],
+          ),
+          body: ListView(
+            children: [
+              Text('$name'),
+              Text('$school'),
+              ElevatedButton(
+                onPressed: () async {
+                  await GoogleSignIn().signOut();
+                  await FirebaseAuth.instance.signOut();
+                  if (mounted) {
+                    Navigator.pushReplacementNamed(context, Routes.loginScreen);
+                  }
+                },
+                child: Text('Logout'),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }
