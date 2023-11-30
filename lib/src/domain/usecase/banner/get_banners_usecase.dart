@@ -6,5 +6,5 @@ class GetBannersUsecase {
 
   const GetBannersUsecase({required this.repository});
 
-  Future<List<BannerDataEntity>> call() async => await repository.getBanners();
+  Future<List<BannerDataEntity>?> call() async => await repository.getBanners();
 }

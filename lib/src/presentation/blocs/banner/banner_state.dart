@@ -1,19 +1,6 @@
-part of 'banner_cubit.dart';
+part of 'banner_bloc.dart';
 
+@immutable
 class BannerState {}
 
 final class BannerInitial extends BannerState {}
-
-final class BannerLoading extends BannerState {}
-
-final class BannerSuccess extends BannerState {
-  final List<BannerDataEntity> banner;
-
-  BannerSuccess({required this.banner});
-}
-
-final class BannerError extends BannerState {
-  final String errorMessage;
-
-  BannerError({required this.errorMessage});
-}

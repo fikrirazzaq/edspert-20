@@ -1,4 +1,4 @@
-package id.edspert.elearning
+package id.edspert.elearning20
 
 import io.flutter.embedding.android.FlutterActivity
 

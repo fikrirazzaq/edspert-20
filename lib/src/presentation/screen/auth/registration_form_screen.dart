@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../blocs/auth/auth_bloc.dart';
 import 'widgets/select_gender_widget.dart';
 import 'widgets/widgets.dart';
 
@@ -22,13 +24,15 @@ class RegistrationFormScreen extends StatelessWidget {
           child: Column(
             children: [
               InputFieldWidget(
-                titleText: 'Email',
+                name: 'Email',
                 hintText: 'Email...',
                 enabled: false,
-                controller: TextEditingController(text: ''),
+                controller: TextEditingController(
+                  text: context.read<AuthBloc>().getCurrentSignedInEmail() ?? '',
+                ),
               ),
               InputFieldWidget(
-                titleText: 'Nama Lengkap',
+                name: 'Nama Lengkap',
                 hintText: 'contoh: Lionel Messi',
                 controller: TextEditingController(),
               ),
@@ -46,7 +50,7 @@ class RegistrationFormScreen extends StatelessWidget {
                 onChanged: (value) {},
               ),
               InputFieldWidget(
-                titleText: 'Nama Sekolah',
+                name: 'Nama Sekolah',
                 hintText: 'Sekolah...',
                 controller: TextEditingController(),
               ),

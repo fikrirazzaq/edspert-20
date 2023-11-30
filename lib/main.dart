@@ -21,9 +21,9 @@ import 'src/data/repository/course_repository_impl.dart';
 import 'src/domain/repository/course_repository.dart';
 import 'src/domain/usecase/courses/get_courses_usecase.dart';
 import 'src/domain/usecase/courses/get_exercises_by_course_usecase.dart';
-import 'src/domain/usecase/get_banners_usecase.dart';
+import 'src/domain/usecase/banner/get_banners_usecase.dart';
 import 'src/presentation/blocs/auth/auth_bloc.dart';
-import 'src/presentation/blocs/banner/banner_cubit.dart';
+import 'src/presentation/blocs/banner/banner_bloc.dart';
 import 'src/presentation/blocs/course/course_bloc.dart';
 import 'src/presentation/blocs/home_nav/home_nav_cubit.dart';
 import 'src/presentation/router/routes.dart';
@@ -38,9 +38,9 @@ import 'src/values/colors.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  /// Initialize Firebase
+  Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  Bloc.observer = SimpleBlocObserver();
   runApp(const MyApp());
 }
 
@@ -63,35 +63,30 @@ class MyApp extends StatelessWidget {
           },
         ),
         BlocProvider(
-          create: (context) => BannerCubit(
-            GetBannersUsecase(
-              repository: BannerRepositoryImpl(
-                remoteDatasource: BannerRemoteDatasource(client: Dio()),
-              ),
-            ),
-          ),
-        ),
-        BlocProvider(
           create: (context) => HomeNavCubit(),
         ),
         BlocProvider(
           create: (context) => AuthBloc(
-            SignInWithGoogleUsecase(
-              repository: AuthRepositoryImpl(
-                remoteDatasource: AuthRemoteDatasource(client: Dio()),
+              SignInWithGoogleUsecase(
+                repository: AuthRepositoryImpl(
+                  remoteDatasource: AuthRemoteDatasource(client: Dio()),
+                ),
               ),
-            ),
-            IsUserRegisteredUsecase(
-              repository: AuthRepositoryImpl(
-                remoteDatasource: AuthRemoteDatasource(client: Dio()),
+              IsUserRegisteredUsecase(
+                repository: AuthRepositoryImpl(
+                  remoteDatasource: AuthRemoteDatasource(client: Dio()),
+                ),
               ),
-            ),
-            IsSignedInWithGoogleUsecase(
-              repository: AuthRepositoryImpl(
-                remoteDatasource: AuthRemoteDatasource(client: Dio()),
+              IsSignedInWithGoogleUsecase(
+                repository: AuthRepositoryImpl(
+                  remoteDatasource: AuthRemoteDatasource(client: Dio()),
+                ),
               ),
-            ),
-          ),
+              GetCurrentSignedInEmailUsecase(
+                repository: AuthRepositoryImpl(
+                  remoteDatasource: AuthRemoteDatasource(client: Dio()),
+                ),
+              )),
         ),
         BlocProvider(
           create: (context) => ProfileBloc(
@@ -109,9 +104,20 @@ class MyApp extends StatelessWidget {
             ),
           ),
         ),
+        BlocProvider(
+          create: (context) => BannerBloc(
+            getBannersUsecase: GetBannersUsecase(
+              repository: BannerRepositoryImpl(
+                remoteDatasource: BannerRemoteDatasource(
+                  client: Dio(),
+                ),
+              ),
+            ),
+          ),
+        ),
       ],
       child: MaterialApp(
-        title: 'Edspert 19',
+        title: 'Edspert 20',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple).copyWith(),

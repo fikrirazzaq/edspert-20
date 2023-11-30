@@ -10,11 +10,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final SignInWithGoogleUsecase signInWithGoogleUsecase;
   final IsUserRegisteredUsecase isUserRegisteredUsecase;
   final IsSignedInWithGoogleUsecase isSignedInWithGoogleUsecase;
+  final GetCurrentSignedInEmailUsecase getCurrentSignedInEmailUsecase;
 
   AuthBloc(
     this.signInWithGoogleUsecase,
     this.isUserRegisteredUsecase,
     this.isSignedInWithGoogleUsecase,
+    this.getCurrentSignedInEmailUsecase,
   ) : super(AuthInitial()) {
     on<AuthEvent>((event, emit) async {
       if (event is SignInWithGoogleEvent) {
@@ -69,7 +71,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     });
   }
 
-  String getCurrentSignedInEmail() {
-    return FirebaseAuth.instance.currentUser?.email ?? '';
+  String? getCurrentSignedInEmail() {
+    return getCurrentSignedInEmailUsecase();
   }
 }

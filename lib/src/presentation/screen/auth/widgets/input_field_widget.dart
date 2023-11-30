@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 
 class InputFieldWidget extends StatelessWidget {
-  final String titleText;
-  final TextEditingController controller;
+  final String name;
   final String hintText;
-  final bool enabled;
+  final TextEditingController controller;
+  final bool? enabled;
 
   const InputFieldWidget({
     super.key,
-    required this.titleText,
+    required this.name,
     required this.controller,
     required this.hintText,
-    this.enabled = true,
+    this.enabled,
   });
 
   @override
@@ -19,11 +19,18 @@ class InputFieldWidget extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(titleText),
+        Text(name),
+        const SizedBox(height: 4),
         TextField(
           controller: controller,
-          decoration: InputDecoration(hintText: hintText),
-          readOnly: !enabled,
+          enabled: enabled,
+          decoration: InputDecoration(
+            hintText: hintText,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: const BorderSide(width: 1),
+            ),
+          ),
         ),
       ],
     );

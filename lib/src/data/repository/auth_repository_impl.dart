@@ -21,6 +21,7 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<UserDataEntity?> getUserByEmail({required String email}) async {
     UserResponseModel? userModel = await remoteDatasource.getUserByEmail(email: email);
     if (userModel != null) {
+      print('userModel: ${userModel.toJson()}');
       final data = UserDataEntity(
         iduser: userModel.data?.iduser ?? '',
         userName: userModel.data?.userName ?? '',
@@ -44,7 +45,9 @@ class AuthRepositoryImpl implements AuthRepository {
 
   @override
   Future<bool> isUserRegistered() async {
-    return await getUserByEmail(email: getCurrentSignedInEmail() ?? '') != null;
+    bool isRegistered = await getUserByEmail(email: getCurrentSignedInEmail() ?? '') != null;
+    print('isRegistered: $isRegistered');
+    return isRegistered;
   }
 
   @override

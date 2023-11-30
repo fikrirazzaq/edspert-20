@@ -24,6 +24,15 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocListener<AuthBloc, AuthState>(
+      listenWhen: (prev, current) {
+        bool isResultOfCheckUserSignedInWithGoogle =
+            (prev is CheckIsUserSignedInWithGoogleState && prev.isLoading == true) &&
+                (current is CheckIsUserSignedInWithGoogleState && current.isLoading == false);
+        bool isResultOfCheckUserRegistered = (prev is CheckIsUserRegisteredState && prev.isLoading == true) &&
+            (current is CheckIsUserRegisteredState && current.isLoading == false);
+
+        return isResultOfCheckUserSignedInWithGoogle || isResultOfCheckUserRegistered;
+      },
       listener: (context, state) {
         if (state is CheckIsUserSignedInWithGoogleState) {
           if (!state.isLoading && state.isSignedIn) {
@@ -36,8 +45,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
         if (state is CheckIsUserRegisteredState) {
           bool isRegistered = state.isRegistered;
-          // Navigator.pushReplacementNamed(context, Routes.homeScreen);
-          // return;
+
           if (isRegistered) {
             Navigator.pushReplacementNamed(context, Routes.homeScreen);
           } else {
@@ -45,7 +53,7 @@ class _SplashScreenState extends State<SplashScreen> {
           }
         }
       },
-      child: Scaffold(
+      child: const Scaffold(
         backgroundColor: Colors.blue,
         body: Center(
           child: Text('Learning'),

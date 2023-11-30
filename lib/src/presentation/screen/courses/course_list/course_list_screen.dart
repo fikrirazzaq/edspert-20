@@ -76,7 +76,7 @@ class _CourseListScreenState extends State<CourseListScreen> {
         }
 
         return Scaffold(
-          backgroundColor: const Color(0xFFF3F7F8),
+          backgroundColor: AppColors.white,
           appBar: AppBar(
             title: const Text(Strings.pilihPelajaran),
             backgroundColor: AppColors.bluePrimary,

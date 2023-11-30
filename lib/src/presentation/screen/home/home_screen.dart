@@ -1,27 +1,14 @@
-import 'package:dio/dio.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:learning/src/values/strings.dart';
 
-import '../../../data/datasource/remote/banner_remote_datasource.dart';
-import '../../../data/datasource/remote/course_remote_datasource.dart';
-import '../../../data/repository/banner_repository_impl.dart';
-import '../../../data/repository/course_repository_impl.dart';
-import '../../../domain/repository/course_repository.dart';
-import '../../../domain/usecase/courses/get_courses_usecase.dart';
-import '../../../domain/usecase/courses/get_exercises_by_course_usecase.dart';
-import '../../../domain/usecase/get_banners_usecase.dart';
 import '../../blocs/auth/auth_bloc.dart';
-import '../../blocs/banner/banner_cubit.dart';
+import '../../blocs/banner/banner_bloc.dart';
 import '../../blocs/course/course_bloc.dart';
-import '../../blocs/home_nav/home_nav_cubit.dart';
 import '../../router/routes.dart';
 import '../widgets/section_title.dart';
-import 'widgets/banner_builder.dart';
-import 'widgets/course_builder.dart';
-import 'widgets/welcoming_widget.dart';
+import 'widgets/widgets.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -33,9 +20,9 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   @override
   void didChangeDependencies() {
-    SchedulerBinding.instance.addPostFrameCallback((timeStamp) async {
+    SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
       context.read<CourseBloc>().add(GetCoursesEvent(majorName: 'IPA'));
-      await context.read<BannerCubit>().getBanners();
+      context.read<BannerBloc>().add(GetBannersEvent());
     });
     super.didChangeDependencies();
   }
@@ -51,7 +38,7 @@ class _HomeScreenState extends State<HomeScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              context.read<AuthBloc>().getCurrentSignedInEmail(),
+              context.read<AuthBloc>().getCurrentSignedInEmail() ?? '',
               style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
             ),
             Text(
@@ -79,14 +66,32 @@ class _HomeScreenState extends State<HomeScreen> {
               const SizedBox(height: 16),
               const SectionTitle(title: 'Terbaru'),
               const SizedBox(height: 8),
-              BlocBuilder<BannerCubit, BannerState>(
+              BlocBuilder<BannerBloc, BannerState>(
                 builder: (context, bannerState) {
-                  if (bannerState is BannerLoading) {
+                  if (bannerState is GetBannerLoadingState) {
                     return const Center(child: CircularProgressIndicator());
                   }
 
-                  if (bannerState is BannerSuccess) {
-                    return BannerBuilder(bannerList: bannerState.banner);
+                  if (bannerState is GetBannerSuccessState) {
+                    return BannerBuilder(
+                      bannerList: bannerState.banners,
+                    );
+                  }
+
+                  if (bannerState is GetBannerErrorState) {
+                    return Column(
+                      children: [
+                        Center(
+                          child: Text(bannerState.errorMessage),
+                        ),
+                        IconButton(
+                          onPressed: () {
+                            context.read<BannerBloc>().add(GetBannersEvent());
+                          },
+                          icon: const Icon(Icons.refresh),
+                        ),
+                      ],
+                    );
                   }
 
                   return const SizedBox.shrink();

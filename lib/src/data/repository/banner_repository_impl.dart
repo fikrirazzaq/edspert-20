@@ -10,7 +10,7 @@ class BannerRepositoryImpl implements BannerRepository {
   const BannerRepositoryImpl({required this.remoteDatasource});
 
   @override
-  Future<List<BannerDataEntity>> getBanners() async {
+  Future<List<BannerDataEntity>?> getBanners() async {
     BannerResponseModel bannerResponseModel = await remoteDatasource.getBanners();
     List<BannerDataModel>? bannerDataModel = bannerResponseModel.data;
 
@@ -31,7 +31,7 @@ class BannerRepositoryImpl implements BannerRepository {
     } else {
       /// Offline
       /// Get from Local DB
-      return [];
+      return null;
     }
   }
 }

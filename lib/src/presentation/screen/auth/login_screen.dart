@@ -57,6 +57,11 @@ class LoginScreen extends StatelessWidget {
                 Column(
                   children: [
                     BlocListener<AuthBloc, AuthState>(
+                      listenWhen: (prev, current) =>
+                          (prev is SignInWithGoogleState && prev.isLoading == true) &&
+                              (current is SignInWithGoogleState && current.isLoading == false) ||
+                          (prev is CheckIsUserRegisteredState && prev.isLoading == true) &&
+                              (current is CheckIsUserRegisteredState && current.isLoading == false),
                       listener: (context, state) {
                         if (state is SignInWithGoogleState) {
                           if (!state.isLoading && state.result != null) {
@@ -84,18 +89,18 @@ class LoginScreen extends StatelessWidget {
                           context.read<AuthBloc>().add(SignInWithGoogleEvent());
                         },
                         child: Ink(
-                          padding: EdgeInsets.symmetric(
+                          padding: const EdgeInsets.symmetric(
                             horizontal: 32,
                             vertical: 12,
                           ),
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: const Color(0xFF3A7FD5),
                             borderRadius: BorderRadius.circular(30),
                             border: Border.all(
                               color: AppColors.green,
                             ),
                           ),
-                          child: Row(
+                          child: const Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Icon(Icons.login),

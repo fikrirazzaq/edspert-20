@@ -27,8 +27,14 @@ class CheckIsUserRegisteredState extends AuthState {
 
 class CheckIsUserSignedInWithGoogleState extends AuthState {
   final bool isSignedIn;
+
+  /// Success or not
   final bool isLoading;
+
+  /// IF loading
   final String? errorMessage;
+
+  /// if isSignedIn == false -> Error Message != null
 
   CheckIsUserSignedInWithGoogleState({
     required this.isSignedIn,
